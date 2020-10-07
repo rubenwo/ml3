@@ -1,5 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
+from tensorflow.keras.models import save_model
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 from dataprep import get_data
 
@@ -23,9 +25,12 @@ model.compile(
     metrics=['accuracy'],
 )
 
+mc = ModelCheckpoint('./models/cnn.h5', monitor='val_loss', mode='min', save_best_only=True, save_weights_only=False)
+
 # Train the model.
 model.fit(
     train_ds,
     validation_data=val_ds,
     epochs=3,
+    callbacks=[mc]
 )
