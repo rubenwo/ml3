@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
@@ -10,11 +11,11 @@ st.write("""
              # Favorite Object detection CNN
              """
              )
-st.write("This is a simple image classification web app to predict ")
+st.write("This is a simple web app to classify images in 8 categories")
 st.set_option('deprecation.showfileUploaderEncoding', False)
 file = st.file_uploader("Please upload an image file", type=["jpg", "png"])
 
-model = load_model('./models/cnn.h5')
+model = load_model('./models/best_model.h5')
 
 def import_and_predict(image_data, model):
     size = (256, 256)
@@ -36,5 +37,7 @@ else:
     st.image(image, use_column_width=True)
     prediction = import_and_predict(image, model)
 
-    st.write(prediction)
+    # st.text("Probability (0: Airplane, 1: Car, 2: Cat, 3: Dog, 4: Flower, 5: Fruit, 6: Motorbike, 7: Person")
+    df = pd.DataFrame(prediction, columns=['Airplane', 'Car', 'Cat', 'Dog', 'Flower', 'Fruit', 'Motorbike', 'Person'])
+    st.dataframe(df)
 
