@@ -4,7 +4,7 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
 
 from dataprep import get_data
 
-train_ds, val_ds = get_data()
+train_ds, val_ds = get_data(0.2)
 
 num_filters = 8
 filter_size = 3
@@ -12,7 +12,8 @@ pool_size = [2, 2]
 strides = 2
 
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
-mc = ModelCheckpoint('./models/best_model.h5', monitor='val_loss', mode='min', save_best_only=True)
+mc = ModelCheckpoint('./models/best_model.h5', monitor='val_loss', mode='min', save_best_only=True,
+                     save_weights_only=False)
 
 # Build the model.
 model = tf.keras.Sequential([
@@ -22,8 +23,13 @@ model = tf.keras.Sequential([
     MaxPooling2D(pool_size=pool_size, strides=strides),
     Conv2D(num_filters, filter_size, input_shape=(256 / 4, 256 / 4, 3)),
     MaxPooling2D(pool_size=pool_size, strides=strides),
+    Conv2D(num_filters, filter_size, input_shape=(256 / 8, 256 / 8, 3)),
+    MaxPooling2D(pool_size=pool_size, strides=strides),
+    Conv2D(num_filters, filter_size, input_shape=(256 / 16, 256 / 16, 3)),
+    MaxPooling2D(pool_size=pool_size, strides=strides),
     Flatten(),
-    Dense(128, activation='relu'),
+    Dense(64, activation='relu'),
+    Dense(64, activation='relu'),
     Dense(64, activation='relu'),
     Dense(8, activation='softmax'),
 ])
@@ -39,7 +45,7 @@ model.compile(
 model.fit(
     train_ds,
     validation_data=val_ds,
-    epochs=20,
+    epochs=30,
     shuffle=True,
     callbacks=[es, mc]
 )

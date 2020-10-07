@@ -1,21 +1,21 @@
 import tensorflow as tf
 
 
-def get_data():
+def get_data(validation_split, image_size=(256, 256)):
     train_ds = tf.keras.preprocessing.image_dataset_from_directory(
         "./data/natural_images",
-        validation_split=0.2,
+        validation_split=validation_split,
         subset="training",
         seed=123,
-        image_size=(256, 256),
+        image_size=image_size,
         batch_size=32)
 
     val_ds = tf.keras.preprocessing.image_dataset_from_directory(
         "./data/natural_images",
-        validation_split=0.2,
+        validation_split=validation_split,
         subset="validation",
         seed=123,
-        image_size=(256, 256),
+        image_size=image_size,
         batch_size=32)
 
     train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
