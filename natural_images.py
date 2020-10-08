@@ -1,8 +1,7 @@
 import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
-from tensorflow.keras.models import save_model
+from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
 
 from dataprep import get_data
 
@@ -19,9 +18,8 @@ mc = ModelCheckpoint('./models/best_model.h5', monitor='val_loss', mode='min', s
 
 # Build the model.
 model = tf.keras.Sequential([
+    # TODO: Big features to smaller features (large filter -> small filter)
     Conv2D(num_filters, filter_size, input_shape=(256, 256, 3)),
-    MaxPooling2D(pool_size=pool_size, strides=strides),
-    Conv2D(num_filters, filter_size, ),
     MaxPooling2D(pool_size=pool_size, strides=strides),
     Conv2D(num_filters, filter_size, ),
     MaxPooling2D(pool_size=pool_size, strides=strides),
@@ -45,8 +43,6 @@ model.compile(
     metrics=['accuracy'],
 )
 
-mc = ModelCheckpoint('./models/cnn.h5', monitor='val_loss', mode='min', save_best_only=True, save_weights_only=False)
-
 # Train the model.
 model.fit(
     train_ds,
@@ -55,3 +51,18 @@ model.fit(
     shuffle=True,
     callbacks=[es, mc]
 )
+#
+# from tensorflow.keras.preprocessing import image
+# import numpy as np
+#
+# img = image.load_img('./data/cat_1.png', grayscale=False, target_size=(256, 256),
+#                      color_mode='rgb', interpolation='bilinear')
+#
+# img_array = image.img_to_array(img)
+# print(img_array.dtype)
+# print(img_array.shape)
+#
+# img_array = np.array([img_array])
+# predictions = model.predict(img_array)
+#
+# print(predictions)
