@@ -21,13 +21,15 @@ mc = ModelCheckpoint('./models/best_model.h5', monitor='val_loss', mode='min', s
 model = tf.keras.Sequential([
     Conv2D(num_filters, filter_size, input_shape=(256, 256, 3)),
     MaxPooling2D(pool_size=pool_size, strides=strides),
-    Conv2D(num_filters, filter_size, input_shape=(256 / 2, 256 / 2, 3)),
+    Conv2D(num_filters, filter_size, ),
     MaxPooling2D(pool_size=pool_size, strides=strides),
-    Conv2D(num_filters, filter_size, input_shape=(256 / 4, 256 / 4, 3)),
+    Conv2D(num_filters, filter_size, ),
     MaxPooling2D(pool_size=pool_size, strides=strides),
-    Conv2D(num_filters, filter_size, input_shape=(256 / 8, 256 / 8, 3)),
+    Conv2D(num_filters, filter_size, ),
     MaxPooling2D(pool_size=pool_size, strides=strides),
-    Conv2D(num_filters, filter_size, input_shape=(256 / 16, 256 / 16, 3)),
+    Conv2D(num_filters, filter_size, ),
+    MaxPooling2D(pool_size=pool_size, strides=strides),
+    Conv2D(num_filters, filter_size, ),
     MaxPooling2D(pool_size=pool_size, strides=strides),
     Flatten(),
     Dense(64, activation='relu'),
@@ -39,7 +41,7 @@ model = tf.keras.Sequential([
 # Compile the model.
 model.compile(
     optimizer=tf.keras.optimizers.Adam(0.0001),
-    loss='sparse_categorical_crossentropy',
+    loss='categorical_crossentropy',
     metrics=['accuracy'],
 )
 
@@ -49,7 +51,7 @@ mc = ModelCheckpoint('./models/cnn.h5', monitor='val_loss', mode='min', save_bes
 model.fit(
     train_ds,
     validation_data=val_ds,
-    epochs=30,
+    epochs=50,
     shuffle=True,
     callbacks=[es, mc]
 )
